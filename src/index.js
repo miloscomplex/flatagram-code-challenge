@@ -8,10 +8,11 @@ let imgContainer = document.querySelector('.image')
 let titleContainer = document.querySelector('.title')
 let commentContainer = document.querySelector('.comments')
 let heart = document.querySelector('.like-button')
+const commentInput = document.querySelector('.comment-form')
+let commentData = document.querySelector('.comment-input')
 
 function renderComments(comments) {
   console.log('hi')
-  commentContainer.innerHTML = ''
   comments.forEach( comment => {
     let li = document.createElement('li')
     let commentTxt = document.createTextNode(comment.content)
@@ -26,14 +27,20 @@ function appendData(data) {
   titleContainer.innerText = data.title
   likeCounter = data.likes
   likesContainer.innerText = likeCounter + ' likes'
+  commentContainer.innerHTML = ''
   renderComments(data.comments)
+}
+
+function addComment(event) {
+  event.preventDefault()
+  console.log(commentData)
 }
 
 function addLikes(event) {
   likeCounter++
   likesContainer.innerText = likeCounter + ' likes'
+  postURL('/images/1', 'PATCH', {likes: likeCounter})
 }
-
 
 function getURL(route) {
   fetch(URL + route)
@@ -41,7 +48,7 @@ function getURL(route) {
   .then(data => appendData(data))
 }
 
-function postURL(route, method) {
+function postURL(route, method, data) {
     fetch(URL + route, {
     method: method,
     headers: {
@@ -56,6 +63,8 @@ function postURL(route, method) {
 }
 
 heart.addEventListener("click", addLikes);
+commentInput.addEventListener('submit', addComment)
+
 
 getURL('/images/1')
 // postURL('/comments', 'POST')
